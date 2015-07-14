@@ -1,37 +1,47 @@
-FROM ubuntu:14.04
-MAINTAINER Ilya Stepanov <dev@ilyastepanov.com>
+# ================================================================================================================
+#
+# Dokuwiki with NGINX and PHP-FPM
+#
+# @see https://github.com/AlbanMontaigu/docker-nginx-php/blob/master/Dockerfile
+# @see https://github.com/docker-library/wordpress/blob/master/fpm/Dockerfile
+# @see https://github.com/istepanov/docker-dokuwiki/blob/master/Dockerfile
+# @see https://github.com/AlbanMontaigu/docker-wordpress
+# ================================================================================================================
 
-RUN apt-get update && \
-    apt-get install -y nginx php5-fpm php5-gd curl && \
-    rm -rf /var/lib/apt/lists/*
+# Base is a nginx install with php
+FROM amontaigu/nginx-php
 
-ENV DOKUWIKI_VERSION 2014-09-29d
-ENV MD5_CHECKSUM 2bf2d6c242c00e9c97f0647e71583375
+# Maintainer
+MAINTAINER alban.montaigu@gmail.com
 
-RUN mkdir -p /var/www \
-    && cd /var/www \
-    && curl -O "http://download.dokuwiki.org/src/dokuwiki/dokuwiki-$DOKUWIKI_VERSION.tgz" \
+# Dokuwiki env variables
+ENV DOKUWIKI_VERSION="2014-09-29d" \
+    MD5_CHECKSUM="2bf2d6c242c00e9c97f0647e71583375"
+
+# System update & install the PHP extensions we need
+RUN apt-get update && apt-get upgrade -y \
+    && apt-get install -y libpng12-dev libjpeg-dev && rm -rf /var/lib/apt/lists/* \
+    && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
+    && docker-php-ext-install gd
+
+# Get Dokuwiki and install it
+RUN mkdir -p --mode=777 /var/local/backup/dokuwiki \
+    && mkdir -p --mode=777 /usr/src/dokuwiki \
+    && curl -o dokuwiki.tar.gz -SL http://download.dokuwiki.org/src/dokuwiki/dokuwiki-$DOKUWIKI_VERSION.tgz \
     && echo "$MD5_CHECKSUM  dokuwiki-$DOKUWIKI_VERSION.tgz" | md5sum -c - \
-    && tar xzf "dokuwiki-$DOKUWIKI_VERSION.tgz" --strip 1 \
-    && rm "dokuwiki-$DOKUWIKI_VERSION.tgz"
+    && tar -xzf dokuwiki.tar.gz --strip-components=1 -C /usr/src/dokuwiki \
+    && rm dokuwiki.tar.gz \
+    && chown -R nginx:nginx /usr/src/dokuwiki
 
-RUN chown -R www-data:www-data /var/www
+# NGINX tuning for DOKUWIKI
+COPY ./nginx/conf/sites-enabled/default.conf /etc/nginx/sites-enabled/default.conf
 
-RUN echo "cgi.fix_pathinfo = 0;" >> /etc/php5/fpm/php.ini
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf
-RUN rm /etc/nginx/sites-enabled/*
-ADD dokuwiki.conf /etc/nginx/sites-enabled/
+# Entrypoint to enable live customization
+COPY docker-entrypoint.sh /docker-entrypoint.sh
 
-EXPOSE 80
-VOLUME [ \
-    "/var/www/data/pages", \
-    "/var/www/data/meta", \
-    "/var/www/data/media", \
-    "/var/www/data/media_attic", \
-    "/var/www/data/media_meta", \
-    "/var/www/data/attic", \
-    "/var/www/conf", \
-    "/var/log" \
-]
+# Volume for dokuwiki backup
+VOLUME /var/local/backup/dokuwiki
 
-CMD /usr/sbin/php5-fpm && /usr/sbin/nginx
+# grr, ENTRYPOINT resets CMD now
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/usr/bin/supervisord"]
