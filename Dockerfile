@@ -27,10 +27,10 @@ RUN apt-get update && apt-get upgrade -y \
 # Get Dokuwiki and install it
 RUN mkdir -p --mode=777 /var/local/backup/dokuwiki \
     && mkdir -p --mode=777 /usr/src/dokuwiki \
-    && curl -o dokuwiki.tar.gz -SL http://download.dokuwiki.org/src/dokuwiki/dokuwiki-$DOKUWIKI_VERSION.tgz \
+    && curl -o dokuwiki.tgz -SL http://download.dokuwiki.org/src/dokuwiki/dokuwiki-$DOKUWIKI_VERSION.tgz \
     && echo "$MD5_CHECKSUM  dokuwiki.tgz" | md5sum -c - \
-    && tar -xzf dokuwiki.tar.gz --strip-components=1 -C /usr/src/dokuwiki \
-    && rm dokuwiki.tar.gz \
+    && tar -xzf dokuwiki.tgz --strip-components=1 -C /usr/src/dokuwiki \
+    && rm dokuwiki.tgz \
     && chown -R nginx:nginx /usr/src/dokuwiki
 
 # NGINX tuning for DOKUWIKI
