@@ -28,7 +28,7 @@ RUN apt-get update && apt-get upgrade -y \
 RUN mkdir -p --mode=777 /var/local/backup/dokuwiki \
     && mkdir -p --mode=777 /usr/src/dokuwiki \
     && curl -o dokuwiki.tar.gz -SL http://download.dokuwiki.org/src/dokuwiki/dokuwiki-$DOKUWIKI_VERSION.tgz \
-    && echo "$MD5_CHECKSUM  dokuwiki-$DOKUWIKI_VERSION.tgz" | md5sum -c - \
+    && echo "$MD5_CHECKSUM  dokuwiki.tgz" | md5sum -c - \
     && tar -xzf dokuwiki.tar.gz --strip-components=1 -C /usr/src/dokuwiki \
     && rm dokuwiki.tar.gz \
     && chown -R nginx:nginx /usr/src/dokuwiki
