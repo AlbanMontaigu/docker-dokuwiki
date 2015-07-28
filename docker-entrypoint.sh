@@ -2,7 +2,7 @@
 set -e
 
 # Backup the prev install in case of fail...
-tar -zcf dokuwiki-v$(date '+%y%m%d%H%M%S').tar.gz /var/local/backup/dokuwiki
+tar -zcf /var/backup/dokuwiki/dokuwiki-v$(date '+%y%m%d%H%M%S').tar.gz /var/www
 
 # Since dokuwki can be upgraded by overwriting files do the upgrade !
 # @TODO use VERSION file to check if necessary

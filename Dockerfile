@@ -25,7 +25,7 @@ RUN apt-get update && apt-get upgrade -y \
     && docker-php-ext-install gd
 
 # Get Dokuwiki and install it
-RUN mkdir -p --mode=777 /var/local/backup/dokuwiki \
+RUN mkdir -p --mode=777 /var/backup/dokuwiki \
     && mkdir -p --mode=777 /usr/src/dokuwiki \
     && curl -o dokuwiki.tgz -SL http://download.dokuwiki.org/src/dokuwiki/dokuwiki-$DOKUWIKI_VERSION.tgz \
     && echo "$MD5_CHECKSUM  dokuwiki.tgz" | md5sum -c - \
@@ -40,7 +40,7 @@ COPY ./nginx/conf/sites-enabled/default.conf /etc/nginx/sites-enabled/default.co
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
 # Volume for dokuwiki backup
-VOLUME /var/local/backup/dokuwiki
+VOLUME /var/backup/dokuwiki
 
 # grr, ENTRYPOINT resets CMD now
 ENTRYPOINT ["/docker-entrypoint.sh"]
