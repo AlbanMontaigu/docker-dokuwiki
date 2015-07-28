@@ -12,7 +12,7 @@ tar -zcf /var/backup/dokuwiki/dokuwiki-v$(date '+%y%m%d%H%M%S').tar.gz /var/www
 echo >&2 "Installing or upgrading dokuwiki in $(pwd) - copying now..."
 tar cf - --one-file-system -C /usr/src/dokuwiki . | tar xf -
 grep -Ev '^($|#)' data/deleted.files | xargs -n 1 rm -vf
-chown -R nginx:nginx *
+chown -R nginx:nginx ./
 echo >&2 "Complete! Dokuwiki has been successfully installed / upgraded to $(pwd)"
 
 # Exec main command
