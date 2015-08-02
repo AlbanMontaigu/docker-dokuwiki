@@ -12,10 +12,18 @@ tar -zcf /var/backup/dokuwiki/dokuwiki-v$(date '+%y%m%d%H%M%S').tar.gz /var/www
 echo >&2 "Installing or upgrading dokuwiki in $(pwd) - copying now..."
 tar cf - --one-file-system -C /usr/src/dokuwiki . | tar xf -
 grep -Ev '^($|#)' data/deleted.files | xargs -n 1 rm -vf
+
 # To disable wrong update messages
 # @see https://www.dokuwiki.org/update_check
 rm -f data/cache/messages.txt 
+
+# Update template configuration site width with my needs
+sed -i -e "s|75em|98em|g" lib/tpl/dokuwiki/style.ini
+
+# Rights fixed
 chown -R nginx:nginx ./
+
+# Done
 echo >&2 "Complete! Dokuwiki has been successfully installed / upgraded to $(pwd)"
 
 # Exec main command
