@@ -15,8 +15,7 @@ FROM amontaigu/nginx-php
 MAINTAINER alban.montaigu@gmail.com
 
 # Dokuwiki env variables
-ENV DOKUWIKI_VERSION="2014-09-29d" \
-    MD5_CHECKSUM="2bf2d6c242c00e9c97f0647e71583375"
+ENV DOKUWIKI_VERSION="2015-08-10"
 
 # System update & install the PHP extensions we need
 RUN apt-get update && apt-get upgrade -y \
@@ -28,7 +27,6 @@ RUN apt-get update && apt-get upgrade -y \
 RUN mkdir -p --mode=777 /var/backup/dokuwiki \
     && mkdir -p --mode=777 /usr/src/dokuwiki \
     && curl -o dokuwiki.tgz -SL http://download.dokuwiki.org/src/dokuwiki/dokuwiki-$DOKUWIKI_VERSION.tgz \
-    && echo "$MD5_CHECKSUM  dokuwiki.tgz" | md5sum -c - \
     && tar -xzf dokuwiki.tgz --strip-components=1 -C /usr/src/dokuwiki \
     && rm dokuwiki.tgz \
     && chown -R nginx:nginx /usr/src/dokuwiki
