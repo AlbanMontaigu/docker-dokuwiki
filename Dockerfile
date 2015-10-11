@@ -15,7 +15,7 @@ FROM amontaigu/nginx-php
 MAINTAINER alban.montaigu@gmail.com
 
 # Dokuwiki env variables
-ENV DOKUWIKI_VERSION="2015-08-10"
+ENV DOKUWIKI_VERSION="2015-08-10a"
 
 # System update & install the PHP extensions we need
 RUN apt-get update && apt-get upgrade -y \
