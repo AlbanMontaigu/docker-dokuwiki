@@ -1,4 +1,4 @@
-# docker-wordpress
+# docker-dokuwiki
 
 This is a fork of the istepanov/ dokuwiki docker image.
 
