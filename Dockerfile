@@ -15,7 +15,7 @@ FROM amontaigu/nginx-php-plus:5.6.21
 MAINTAINER alban.montaigu@gmail.com
 
 # Dokuwiki env variables
-ENV DOKUWIKI_VERSION="2015-08-10a"
+ENV DOKUWIKI_VERSION="2016-06-26a"
 
 # Get Dokuwiki and install it
 RUN mkdir -p --mode=777 /var/backup/dokuwiki \
