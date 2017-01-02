@@ -1,4 +1,7 @@
 
+## 2016-06-26a (2017-01-02)
+- Update to amontaigu/nginx-php-plus:5.6.29
+
 ## 2016-06-26a (2016-10-17)
 - Update to amontaigu/nginx-php-plus:5.6.27
 
